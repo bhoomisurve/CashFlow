@@ -14,7 +14,7 @@ load_dotenv()
 def test_connection():
     """Test basic MongoDB connection"""
     print("="*60)
-    print("🧪 Testing MongoDB Atlas Connection")
+    print("Testing MongoDB Atlas Connection")
     print("="*60)
     print()
     
@@ -22,26 +22,26 @@ def test_connection():
         # Get connection string
         mongodb_uri = os.getenv('MONGODB_URI')
         if not mongodb_uri:
-            print("❌ ERROR: MONGODB_URI not found in .env")
+            print("ERROR: MONGODB_URI not found in .env")
             print("Please add your connection string to .env file")
             return False
         
-        print("📡 Connecting to MongoDB Atlas...")
+        print(" Connecting to MongoDB Atlas...")
         client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=5000)
         
         # Test connection
         client.admin.command('ping')
-        print("✅ Connection successful!")
+        print("Connection successful!")
         print()
         
         # Get database
         db_name = os.getenv('MONGODB_DATABASE', 'cashflow')
         db = client[db_name]
-        print(f"📂 Using database: {db_name}")
+        print(f"Using database: {db_name}")
         print()
         
         # Test write operation
-        print("📝 Testing write operation...")
+        print("Testing write operation...")
         test_collection = db.test_connection
         test_doc = {
             "test": "Hello from CashFlow!",
@@ -49,33 +49,33 @@ def test_connection():
             "status": "success"
         }
         result = test_collection.insert_one(test_doc)
-        print(f"✅ Document inserted with ID: {result.inserted_id}")
+        print(f"Document inserted with ID: {result.inserted_id}")
         print()
         
         # Test read operation
-        print("📖 Testing read operation...")
+        print("Testing read operation...")
         retrieved = test_collection.find_one({"_id": result.inserted_id})
-        print(f"✅ Retrieved document: {retrieved['test']}")
+        print(f"Retrieved document: {retrieved['test']}")
         print()
         
         # Test update operation
-        print("🔄 Testing update operation...")
+        print("Testing update operation...")
         test_collection.update_one(
             {"_id": result.inserted_id},
             {"$set": {"status": "updated"}}
         )
         updated = test_collection.find_one({"_id": result.inserted_id})
-        print(f"✅ Updated status: {updated['status']}")
+        print(f"Updated status: {updated['status']}")
         print()
         
         # Cleanup
-        print("🧹 Cleaning up test data...")
+        print("Cleaning up test data...")
         test_collection.delete_one({"_id": result.inserted_id})
-        print("✅ Test document deleted")
+        print("Test document deleted")
         print()
         
         # Show collections
-        print("📚 Available collections:")
+        print("Available collections:")
         collections = db.list_collection_names()
         if collections:
             for coll in collections:
@@ -88,20 +88,20 @@ def test_connection():
         client.close()
         
         print("="*60)
-        print("🎉 ALL TESTS PASSED!")
+        print("ALL TESTS PASSED!")
         print("="*60)
         print()
-        print("✅ Your MongoDB Atlas setup is working perfectly!")
-        print("✅ You can now run: python app.py")
+        print("Your MongoDB Atlas setup is working perfectly!")
+        print("You can now run: python app.py")
         print()
         
         return True
         
     except ConnectionFailure as e:
-        print("❌ Connection failed!")
+        print("Connection failed!")
         print(f"Error: {e}")
         print()
-        print("🔍 Troubleshooting:")
+        print("Troubleshooting:")
         print("1. Check your MONGODB_URI in .env")
         print("2. Verify your password is correct (no special chars)")
         print("3. Check IP whitelist in MongoDB Atlas")
@@ -109,7 +109,7 @@ def test_connection():
         return False
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
         print()
         print("Please check your MongoDB Atlas configuration")
         return False
@@ -117,7 +117,7 @@ def test_connection():
 def test_cashflow_collections():
     """Test CashFlow-specific collections"""
     print("\n" + "="*60)
-    print("🧪 Testing CashFlow Collections")
+    print("Testing CashFlow Collections")
     print("="*60)
     print()
     
@@ -128,7 +128,7 @@ def test_cashflow_collections():
         db = client[db_name]
         
         # Test users collection
-        print("👤 Testing users collection...")
+        print("Testing users collection...")
         users = db.users
         test_user = {
             "email": "test@cashflow.ai",
@@ -141,15 +141,15 @@ def test_cashflow_collections():
         # Check if user exists
         existing = users.find_one({"email": "test@cashflow.ai"})
         if existing:
-            print("  ℹ️  Test user already exists")
+            print("Test user already exists")
             user_id = str(existing['_id'])
         else:
             result = users.insert_one(test_user)
             user_id = str(result.inserted_id)
-            print(f"  ✅ Created test user: {user_id}")
+            print(f" Created test user: {user_id}")
         
         # Test transactions collection
-        print("\n💰 Testing transactions collection...")
+        print("\nTesting transactions collection...")
         transactions = db.transactions
         test_txn = {
             "user_id": user_id,
@@ -160,10 +160,10 @@ def test_cashflow_collections():
             "created_at": datetime.utcnow()
         }
         result = transactions.insert_one(test_txn)
-        print(f"  ✅ Created test transaction: {result.inserted_id}")
+        print(f"  Created test transaction: {result.inserted_id}")
         
         # Test inventory collection
-        print("\n📦 Testing inventory collection...")
+        print("\nTesting inventory collection...")
         inventory = db.inventory
         test_inv = {
             "user_id": user_id,
@@ -172,10 +172,10 @@ def test_cashflow_collections():
             "last_updated": datetime.utcnow()
         }
         result = inventory.insert_one(test_inv)
-        print(f"  ✅ Created test inventory: {result.inserted_id}")
+        print(f"  Created test inventory: {result.inserted_id}")
         
         # Test alerts collection
-        print("\n🔔 Testing alerts collection...")
+        print("\n Testing alerts collection...")
         alerts = db.alerts
         test_alert = {
             "user_id": user_id,
@@ -185,14 +185,14 @@ def test_cashflow_collections():
             "created_at": datetime.utcnow()
         }
         result = alerts.insert_one(test_alert)
-        print(f"  ✅ Created test alert: {result.inserted_id}")
+        print(f"  Created test alert: {result.inserted_id}")
         
         print("\n" + "="*60)
-        print("🎉 All CashFlow collections working!")
+        print(" All CashFlow collections working!")
         print("="*60)
         
         # Show summary
-        print(f"\n📊 Database Summary:")
+        print(f"\nDatabase Summary:")
         print(f"  Users: {users.count_documents({})}")
         print(f"  Transactions: {transactions.count_documents({})}")
         print(f"  Inventory: {inventory.count_documents({})}")
@@ -202,20 +202,20 @@ def test_cashflow_collections():
         return True
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
         return False
 
 if __name__ == "__main__":
-    print("\n🚀 CashFlow MongoDB Test Suite\n")
+    print("\nCashFlow MongoDB Test Suite\n")
     
     # Test basic connection
     if test_connection():
         # Test CashFlow collections
         test_cashflow_collections()
         
-        print("\n" + "🎯"*30)
-        print("Your MongoDB Atlas is ready for CashFlow! 🚀")
-        print("🎯"*30 + "\n")
+        print("\n" + ""*30)
+        print("Your MongoDB Atlas is ready for CashFlow! ")
+        print(""*30 + "\n")
     else:
-        print("\n❌ Please fix the connection issues before proceeding.\n")
+        print("\n Please fix the connection issues before proceeding.\n")
         print("See MONGODB_SETUP.md for detailed instructions.\n")
